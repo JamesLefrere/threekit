@@ -89,8 +89,18 @@ Template.index.onRendered ->
 
 	return
 
-Template.index.events
-	"mousedown": (e, t) ->
+Template.body.events
+	"keyup": (e) ->
+		t = Index
+		e.preventDefault()
+		if e.keyCode is 32
+			if t.video.paused
+				t.video.play()
+			else
+				t.video.pause()
+		return
+	"mousedown": (e) ->
+		t = Index
 		e.preventDefault()
 		t.isUserInteracting = true
 		t.onPointerDownPointerX = e.clientX
@@ -98,15 +108,18 @@ Template.index.events
 		t.onPointerDownLon = t.lon
 		t.onPointerDownLat = t.lat
 		return
-	"mouseup": (e, t) ->
+	"mouseup": (e) ->
+		t = Index
 		t.isUserInteracting = false
 		return
-	"mousemove": (e, t) ->
+	"mousemove": (e) ->
+		t = Index
 		if t.isUserInteracting == true
 			t.lon = (t.onPointerDownPointerX - e.clientX) * 0.1 + t.onPointerDownLon
 			t.lat = (e.clientY - t.onPointerDownPointerY) * 0.1 + t.onPointerDownLat
 		return
 	"mousewheel, DOMMouseScroll": (e, t) ->
+		t = Index
 		t.camera.fov -= e.originalEvent.wheelDeltaY * 0.05
 		t.camera.updateProjectionMatrix()
 		return
