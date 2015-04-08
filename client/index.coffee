@@ -32,7 +32,7 @@ Template.index.onRendered ->
 		t.video.src = "/schunemann360.mp4"
 		t.video.load()
 		t.container = document.getElementById("3")
-		t.camera = new (THREE.PerspectiveCamera)(90, window.innerWidth / window.innerHeight, 1, 1100)
+		t.camera = new (THREE.PerspectiveCamera)(105, window.innerWidth / window.innerHeight, 1, 1100)
 		t.camera.target = new (THREE.Vector3)(0, 0, 0)
 		t.scene = new (THREE.Scene)
 		t.geometry = new (THREE.SphereGeometry)(500, 24, 24)
