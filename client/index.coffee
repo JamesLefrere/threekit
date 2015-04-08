@@ -90,7 +90,7 @@ Template.index.onRendered ->
 	return
 
 Template.index.events
-	"mousedown #3": (e, t) ->
+	"mousedown": (e, t) ->
 		e.preventDefault()
 		t.isUserInteracting = true
 		t.onPointerDownPointerX = e.clientX
@@ -98,15 +98,15 @@ Template.index.events
 		t.onPointerDownLon = t.lon
 		t.onPointerDownLat = t.lat
 		return
-	"mouseup #3": (e, t) ->
+	"mouseup": (e, t) ->
 		t.isUserInteracting = false
 		return
-	"mousemove #3": (e, t) ->
+	"mousemove": (e, t) ->
 		if t.isUserInteracting == true
 			t.lon = (t.onPointerDownPointerX - e.clientX) * 0.1 + t.onPointerDownLon
 			t.lat = (e.clientY - t.onPointerDownPointerY) * 0.1 + t.onPointerDownLat
 		return
-	"mousewheel #3, DOMMouseScroll #3": (e, t) ->
+	"mousewheel, DOMMouseScroll": (e, t) ->
 		t.camera.fov -= e.originalEvent.wheelDeltaY * 0.05
 		t.camera.updateProjectionMatrix()
 		return
