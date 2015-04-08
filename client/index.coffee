@@ -28,9 +28,10 @@ Template.index.onRendered ->
 	window.Index = t = this
 	@init = ->
 		t.video = document.createElement("video")
-		t.video.src = "/gipsstr360.mp4"
+		# t.video.src = "/gipsstr360.mp4"
+		t.video.src = "/schunemann360.mp4"
 		t.video.load()
-		t.container = document.getElementById("three")
+		t.container = document.getElementById("3")
 		t.camera = new (THREE.PerspectiveCamera)(90, window.innerWidth / window.innerHeight, 1, 1100)
 		t.camera.target = new (THREE.Vector3)(0, 0, 0)
 		t.scene = new (THREE.Scene)
@@ -50,7 +51,7 @@ Template.index.onRendered ->
 		t.renderer.setPixelRatio window.devicePixelRatio
 		t.renderer.setSize window.innerWidth, window.innerHeight
 		t.container.appendChild t.renderer.domElement
-		t.video.play()
+		# t.video.play()
 		return
 
 	@animate = ->
@@ -89,7 +90,7 @@ Template.index.onRendered ->
 	return
 
 Template.index.events
-	"mousedown #three": (e, t) ->
+	"mousedown #3": (e, t) ->
 		e.preventDefault()
 		t.isUserInteracting = true
 		t.onPointerDownPointerX = e.clientX
@@ -97,15 +98,15 @@ Template.index.events
 		t.onPointerDownLon = t.lon
 		t.onPointerDownLat = t.lat
 		return
-	"mouseup #three": (e, t) ->
+	"mouseup #3": (e, t) ->
 		t.isUserInteracting = false
 		return
-	"mousemove #three": (e, t) ->
+	"mousemove #3": (e, t) ->
 		if t.isUserInteracting == true
 			t.lon = (t.onPointerDownPointerX - e.clientX) * 0.1 + t.onPointerDownLon
 			t.lat = (e.clientY - t.onPointerDownPointerY) * 0.1 + t.onPointerDownLat
 		return
-	"mousewheel #three, DOMMouseScroll #three": (e, t) ->
+	"mousewheel #3, DOMMouseScroll #3": (e, t) ->
 		# WebKit
 		if e.wheelDeltaY
 			t.camera.fov -= e.wheelDeltaY * 0.05
