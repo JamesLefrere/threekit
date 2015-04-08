@@ -1,5 +1,6 @@
 Template.index.onCreated ->
 	@camera = undefined
+	@video = undefined
 	@scene = undefined
 	@renderer = undefined
 	@isUserInteracting = false
@@ -17,6 +18,7 @@ Template.index.onCreated ->
 	@theta = 0
 	@container = undefined
 	@mesh = undefined
+	@texture = undefined
 	@geometry = undefined
 	@material = undefined
 	@mesh = undefined
@@ -25,19 +27,30 @@ Template.index.onCreated ->
 Template.index.onRendered ->
 	t = this
 	@init = ->
+		t.video = document.createElement("video")
+		t.video.src = "/gipsstr360.mp4"
+		t.video.load()
 		t.container = document.getElementById("three")
-		t.camera = new (THREE.PerspectiveCamera)(75, window.innerWidth / window.innerHeight, 1, 1100)
+		t.camera = new (THREE.PerspectiveCamera)(90, window.innerWidth / window.innerHeight, 1, 1100)
 		t.camera.target = new (THREE.Vector3)(0, 0, 0)
 		t.scene = new (THREE.Scene)
-		t.geometry = new (THREE.SphereGeometry)(500, 60, 40)
+		t.geometry = new (THREE.SphereGeometry)(500, 24, 24)
 		t.geometry.applyMatrix (new (THREE.Matrix4)).makeScale(-1, 1, 1)
-		t.material = new (THREE.MeshBasicMaterial)(map: THREE.ImageUtils.loadTexture("2294472375_24a3b8ef46_o.jpg"))
+		t.texture = new (THREE.VideoTexture)(t.video)
+		t.texture.minFilter = THREE.LinearFilter
+		t.texture.magFilter = THREE.LinearFilter
+		t.material = new (THREE.MeshBasicMaterial)(
+			map: t.texture
+			overdraw: true
+			side: THREE.DoubleSide
+		)
 		t.mesh = new (THREE.Mesh)(t.geometry, t.material)
 		t.scene.add t.mesh
 		t.renderer = new (THREE.WebGLRenderer)
 		t.renderer.setPixelRatio window.devicePixelRatio
 		t.renderer.setSize window.innerWidth, window.innerHeight
 		t.container.appendChild t.renderer.domElement
+		t.video.play()
 		return
 
 	@animate = ->
