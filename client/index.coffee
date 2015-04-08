@@ -59,8 +59,8 @@ Template.index.onRendered ->
 		return
 
 	@update = ->
-		if t.isUserInteracting == false
-			t.lon += 0.1
+		# if t.isUserInteracting == false
+			# t.lon += 0.1
 		t.lat = Math.max(-85, Math.min(85, t.lat))
 		t.phi = THREE.Math.degToRad(90 - t.lat)
 		t.theta = THREE.Math.degToRad(t.lon)
