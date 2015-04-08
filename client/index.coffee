@@ -65,9 +65,9 @@ Template.index.onRendered ->
 		t.lat = Math.max(-85, Math.min(85, t.lat))
 		t.phi = THREE.Math.degToRad(90 - t.lat)
 		t.theta = THREE.Math.degToRad(t.lon)
-		t.camera.target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
-		t.camera.target.y = 500 * Math.cos(t.phi)
-		t.camera.target.z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
+		t.camera.target.x = -500 * Math.sin(t.phi) * Math.cos(t.theta)
+		t.camera.target.y = -500 * Math.cos(t.phi)
+		t.camera.target.z = -500 * Math.sin(t.phi) * Math.sin(t.theta)
 		t.camera.lookAt t.camera.target
 
 		###
