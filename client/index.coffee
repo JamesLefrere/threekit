@@ -77,6 +77,12 @@ Template.index.onRendered ->
 		t.renderer.render t.scene, t.camera
 		return
 
+	$(window).resize ->
+		t.camera.aspect = window.innerWidth / window.innerHeight
+		t.camera.updateProjectionMatrix()
+		t.renderer.setSize window.innerWidth, window.innerHeight
+		return
+
 	@init()
 	@animate()
 
@@ -110,9 +116,4 @@ Template.index.events
 		else if e.detail
 			t.camera.fov += e.detail * 1.0
 		t.camera.updateProjectionMatrix()
-		return
-	"resize window": (e, t) ->
-		t.camera.aspect = window.innerWidth / window.innerHeight
-		t.camera.updateProjectionMatrix()
-		t.renderer.setSize window.innerWidth, window.innerHeight
 		return
