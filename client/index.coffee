@@ -25,7 +25,7 @@ Template.index.onCreated ->
 	return
 
 Template.index.onRendered ->
-	t = this
+	window.Index = t = this
 	@init = ->
 		t.video = document.createElement("video")
 		t.video.src = "/gipsstr360.mp4"
