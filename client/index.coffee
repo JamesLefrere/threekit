@@ -107,14 +107,6 @@ Template.index.events
 			t.lat = (e.clientY - t.onPointerDownPointerY) * 0.1 + t.onPointerDownLat
 		return
 	"mousewheel #3, DOMMouseScroll #3": (e, t) ->
-		# WebKit
-		if e.wheelDeltaY
-			t.camera.fov -= e.wheelDeltaY * 0.05
-			# Opera / Explorer 9
-		else if e.wheelDelta
-			t.camera.fov -= e.wheelDelta * 0.05
-			# Firefox
-		else if e.detail
-			t.camera.fov += e.detail * 1.0
+		t.camera.fov -= e.originalEvent.wheelDeltaY * 0.05
 		t.camera.updateProjectionMatrix()
 		return
