@@ -1,5 +1,5 @@
 Template.index.onCreated ->
-	@cameras = []
+	@camera = undefined
 	@video = undefined
 	@scene = undefined
 	@renderer = undefined
@@ -37,21 +37,12 @@ Template.index.onRendered ->
 		document.body.appendChild t.stats.domElement
 
 		t.video = document.createElement("video")
-		# t.video.src = "/gipsstr360.mp4"
-		t.video.src = "/schunemann360.mp4"
+		t.video.src = "/gipsstr360.mp4"
+		# t.video.src = "/schunemann360.mp4"
 		t.video.load()
 		t.container = document.getElementById("3")
-
-		for i in [0..5] by 1
-			t.cameras[i] = new (THREE.PerspectiveCamera)(90, 1, 1, 1100)
-
-		t.cameras[0].target = new (THREE.Vector3)(0, -90, 0) # up
-		t.cameras[1].target = new (THREE.Vector3)(0, 90, 0) # down
-		t.cameras[2].target = new (THREE.Vector3)(-90, 0, 0) # left
-		t.cameras[3].target = new (THREE.Vector3)(90, 0, 0) # right
-		t.cameras[4].target = new (THREE.Vector3)(0, 0, -90) # front
-		t.cameras[5].target = new (THREE.Vector3)(0, 0, 90) # back
-
+		t.camera = new (THREE.PerspectiveCamera)(90, window.innerWidth / window.innerHeight, 1, 1100)
+		t.camera.target = new (THREE.Vector3)(0, 0, 0)
 		t.scene = new (THREE.Scene)
 		t.geometry = new (THREE.SphereGeometry)(500, 32, 16)
 		t.geometry.applyMatrix (new (THREE.Matrix4)).makeScale(-1, 1, 1)
@@ -62,16 +53,16 @@ Template.index.onRendered ->
 		t.material = new (THREE.MeshBasicMaterial)(
 			map: t.texture
 			overdraw: true
-			side: THREE.FrontSide
+			side: THREE.DoubleSide
 		)
 		t.mesh = new (THREE.Mesh)(t.geometry, t.material)
 		t.scene.add t.mesh
 
-		# basicMaterial = new (THREE.MeshBasicMaterial)(color: 0x000000)
-		# basicMesh = new (THREE.Mesh)(t.geometry, basicMaterial)
-		# edges = new THREE.EdgesHelper(basicMesh, 0xeebb00)
-		# edges.material.linewidth = 4
-		# t.scene.add edges
+		basicMaterial = new (THREE.MeshBasicMaterial)(color: 0x000000)
+		basicMesh = new (THREE.Mesh)(t.geometry, basicMaterial)
+		edges = new THREE.EdgesHelper(basicMesh, 0xeebb00)
+		edges.material.linewidth = 4
+		t.scene.add edges
 
 		t.renderer = new (THREE.WebGLRenderer)
 		t.renderer.setPixelRatio window.devicePixelRatio
@@ -92,62 +83,23 @@ Template.index.onRendered ->
 		t.lat = Math.max(-85, Math.min(85, t.lat))
 		t.phi = THREE.Math.degToRad(90 - t.lat)
 		t.theta = THREE.Math.degToRad(t.lon)
-		# t.camera.target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
-		# t.camera.target.y = 500 * Math.cos(t.phi)
-		# t.camera.target.z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
-		# t.camera.lookAt t.camera.target
+		t.camera.target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
+		t.camera.target.y = 500 * Math.cos(t.phi)
+		t.camera.target.z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
+		t.camera.lookAt t.camera.target
 
 		###
 		// distortion
 		t.camera.position.copy( t.camera.target ).negate();
 		###
 
-		width = 120
-		height = 120
-
-		# up
-		t.renderer.setViewport 120, 240, width, height
-		t.renderer.setScissor 120, 240, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[0]
-
-		# down
-		t.renderer.setViewport 120, 0, width, height
-		t.renderer.setScissor 120, 0, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[1]
-
-		# left
-		t.renderer.setViewport 0, 120, width, height
-		t.renderer.setScissor 0, 120, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[2]
-
-		# right
-		t.renderer.setViewport 360, 120, width, height
-		t.renderer.setScissor 360, 120, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[3]
-
-		# front
-		t.renderer.setViewport 240, 120, width, height
-		t.renderer.setScissor 240, 120, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[4]
-
-		# back
-		t.renderer.setViewport 120, 120, width, height
-		t.renderer.setScissor 120, 120, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[5]
-
+		t.renderer.render t.scene, t.camera
 		t.stats.end()
 		return
 
 	$(window).resize ->
-		# t.camera.aspect = window.innerWidth / window.innerHeight
-		for camera in t.cameras
-			camera.updateProjectionMatrix()
+		t.camera.aspect = window.innerWidth / window.innerHeight
+		t.camera.updateProjectionMatrix()
 		t.renderer.setSize window.innerWidth, window.innerHeight
 		return
 
