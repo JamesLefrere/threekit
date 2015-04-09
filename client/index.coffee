@@ -22,21 +22,31 @@ Template.index.onCreated ->
 	@geometry = undefined
 	@material = undefined
 	@mesh = undefined
+	@stats = undefined
 	return
 
 Template.index.onRendered ->
 	window.Index = t = this
+	
 	@init = ->
+		t.stats = new Stats
+		t.stats.setMode 0
+		t.stats.domElement.style.position = "absolute"
+		t.stats.domElement.style.left = "5px"
+		t.stats.domElement.style.top = "5px"
+		document.body.appendChild t.stats.domElement
+
 		t.video = document.createElement("video")
-		# t.video.src = "/gipsstr360.mp4"
-		t.video.src = "/schunemann360.mp4"
+		t.video.src = "/gipsstr360.mp4"
+		# t.video.src = "/schunemann360.mp4"
 		t.video.load()
 		t.container = document.getElementById("3")
-		t.camera = new (THREE.PerspectiveCamera)(105, window.innerWidth / window.innerHeight, 1, 1100)
+		t.camera = new (THREE.PerspectiveCamera)(90, window.innerWidth / window.innerHeight, 1, 1100)
 		t.camera.target = new (THREE.Vector3)(0, 0, 0)
 		t.scene = new (THREE.Scene)
-		t.geometry = new (THREE.SphereGeometry)(500, 24, 24)
+		t.geometry = new (THREE.SphereGeometry)(500, 32, 16)
 		t.geometry.applyMatrix (new (THREE.Matrix4)).makeScale(-1, 1, 1)
+
 		t.texture = new (THREE.VideoTexture)(t.video)
 		t.texture.minFilter = THREE.LinearFilter
 		t.texture.magFilter = THREE.LinearFilter
@@ -47,6 +57,13 @@ Template.index.onRendered ->
 		)
 		t.mesh = new (THREE.Mesh)(t.geometry, t.material)
 		t.scene.add t.mesh
+
+		basicMaterial = new (THREE.MeshBasicMaterial)(color: 0x000000)
+		basicMesh = new (THREE.Mesh)(t.geometry, basicMaterial)
+		edges = new THREE.EdgesHelper(basicMesh, 0xeebb00)
+		edges.material.linewidth = 4
+		t.scene.add edges
+
 		t.renderer = new (THREE.WebGLRenderer)
 		t.renderer.setPixelRatio window.devicePixelRatio
 		t.renderer.setSize window.innerWidth, window.innerHeight
@@ -60,14 +77,15 @@ Template.index.onRendered ->
 		return
 
 	@update = ->
+		t.stats.begin()
 		# if t.isUserInteracting == false
 			# t.lon += 0.1
 		t.lat = Math.max(-85, Math.min(85, t.lat))
 		t.phi = THREE.Math.degToRad(90 - t.lat)
 		t.theta = THREE.Math.degToRad(t.lon)
-		t.camera.target.x = -500 * Math.sin(t.phi) * Math.cos(t.theta)
-		t.camera.target.y = -500 * Math.cos(t.phi)
-		t.camera.target.z = -500 * Math.sin(t.phi) * Math.sin(t.theta)
+		t.camera.target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
+		t.camera.target.y = 500 * Math.cos(t.phi)
+		t.camera.target.z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
 		t.camera.lookAt t.camera.target
 
 		###
@@ -76,6 +94,7 @@ Template.index.onRendered ->
 		###
 
 		t.renderer.render t.scene, t.camera
+		t.stats.end()
 		return
 
 	$(window).resize ->
