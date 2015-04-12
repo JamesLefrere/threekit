@@ -28,6 +28,7 @@ Template.index.onCreated ->
 
 Template.index.onRendered ->
 	window.Index = t = this
+	vid = false
 	
 	@init = ->
 		t.stats = new Stats
@@ -37,10 +38,11 @@ Template.index.onRendered ->
 		t.stats.domElement.style.top = "5px"
 		document.body.appendChild t.stats.domElement
 
-		t.video = document.createElement("video")
-		# t.video.src = "/gipsstr360.mp4"
-		t.video.src = "/schunemann360.mp4"
-		t.video.load()
+		if vid
+			t.video = document.createElement("video")
+			# t.video.src = "/gipsstr360.mp4"
+			t.video.src = "/schunemann360.mp4"
+			t.video.load()
 		t.container = document.getElementById("3")
 
 		for i in [0..5] by 1
@@ -57,14 +59,17 @@ Template.index.onRendered ->
 		t.sphere = new (THREE.SphereGeometry)(500, 32, 16)
 		t.sphere.applyMatrix (new (THREE.Matrix4)).makeScale(-1, 1, 1)
 
-		t.texture = new (THREE.VideoTexture)(t.video)
-		t.texture.minFilter = THREE.LinearFilter
-		t.texture.magFilter = THREE.LinearFilter
-		t.material = new (THREE.MeshBasicMaterial)(
-			map: t.texture
-			overdraw: true
-			side: THREE.FrontSide
-		)
+		if vid
+			t.texture = new (THREE.VideoTexture)(t.video)
+			t.texture.minFilter = THREE.LinearFilter
+			t.texture.magFilter = THREE.LinearFilter
+			t.material = new (THREE.MeshBasicMaterial)(
+				map: t.texture
+				overdraw: true
+				side: THREE.FrontSide
+			)
+		else
+			t.material = new (THREE.MeshBasicMaterial)(map: THREE.ImageUtils.loadTexture("/2758_1.png"))
 
 		t.mesh = new (THREE.Mesh)(t.sphere, t.material)
 		t.scene.add t.mesh
