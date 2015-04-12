@@ -93,13 +93,14 @@ Template.index.onRendered ->
 
 	@update = ->
 		t.stats.begin()
-		# if t.isUserInteracting == false
-			# t.lon += 0.1
-		t.lat = Math.max(-85, Math.min(85, t.lat))
-		t.phi = THREE.Math.degToRad(90 - t.lat)
-		t.theta = THREE.Math.degToRad(t.lon)
-
-		t.mesh.rotateY(t.theta)
+		if t.isUserInteracting
+			t.lat = Math.max(-85, Math.min(85, t.lat))
+			t.phi = THREE.Math.degToRad(90 - t.lat)
+			t.theta = THREE.Math.degToRad(t.lon)
+			x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
+			y = 500 * Math.cos(t.phi)
+			z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
+			t.mesh.lookAt new (THREE.Vector3)(x, y, z)
 
 		# t.cameras[2].target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
 		# t.cameras[2].target.y = 500 * Math.cos(t.phi)
