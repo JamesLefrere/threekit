@@ -103,11 +103,11 @@ Template.index.onRendered ->
 		###
 
 		width = 120
-		height = 68
+		height = 120
 
 		# up
-		t.renderer.setViewport 120, 136, width, height
-		t.renderer.setScissor 120, 136, width, height
+		t.renderer.setViewport 120, 240, width, height
+		t.renderer.setScissor 120, 240, width, height
 		t.renderer.enableScissorTest true
 		t.renderer.render t.scene, t.cameras[0]
 
@@ -118,26 +118,26 @@ Template.index.onRendered ->
 		t.renderer.render t.scene, t.cameras[1]
 
 		# left
-		t.renderer.setViewport 0, 68, width, height
-		t.renderer.setScissor 0, 68, width, height
+		t.renderer.setViewport 0, 120, width, height
+		t.renderer.setScissor 0, 120, width, height
 		t.renderer.enableScissorTest true
 		t.renderer.render t.scene, t.cameras[2]
 
 		# right
-		t.renderer.setViewport 360, 68, width, height
-		t.renderer.setScissor 360, 68, width, height
+		t.renderer.setViewport 360, 120, width, height
+		t.renderer.setScissor 360, 120, width, height
 		t.renderer.enableScissorTest true
 		t.renderer.render t.scene, t.cameras[3]
 
 		# front
-		t.renderer.setViewport 240, 68, width, height
-		t.renderer.setScissor 240, 68, width, height
+		t.renderer.setViewport 240, 120, width, height
+		t.renderer.setScissor 240, 120, width, height
 		t.renderer.enableScissorTest true
 		t.renderer.render t.scene, t.cameras[4]
 
 		# back
-		t.renderer.setViewport 120, 68, width, height
-		t.renderer.setScissor 120, 68, width, height
+		t.renderer.setViewport 120, 120, width, height
+		t.renderer.setScissor 120, 120, width, height
 		t.renderer.enableScissorTest true
 		t.renderer.render t.scene, t.cameras[5]
 
