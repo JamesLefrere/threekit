@@ -19,7 +19,8 @@ Template.index.onCreated ->
 	@container = undefined
 	@mesh = undefined
 	@texture = undefined
-	@geometry = undefined
+	@sphere = undefined
+	@cube = undefined
 	@material = undefined
 	@mesh = undefined
 	@stats = undefined
@@ -53,8 +54,8 @@ Template.index.onRendered ->
 		t.cameras[5].lookAt new (THREE.Vector3)(-90, 0, 0) # back
 
 		t.scene = new (THREE.Scene)
-		t.geometry = new (THREE.SphereGeometry)(500, 32, 16)
-		t.geometry.applyMatrix (new (THREE.Matrix4)).makeScale(-1, 1, 1)
+		t.sphere = new (THREE.SphereGeometry)(500, 32, 16)
+		t.sphere.applyMatrix (new (THREE.Matrix4)).makeScale(-1, 1, 1)
 
 		t.texture = new (THREE.VideoTexture)(t.video)
 		t.texture.minFilter = THREE.LinearFilter
@@ -64,11 +65,16 @@ Template.index.onRendered ->
 			overdraw: true
 			side: THREE.FrontSide
 		)
-		t.mesh = new (THREE.Mesh)(t.geometry, t.material)
+
+		t.mesh = new (THREE.Mesh)(t.sphere, t.material)
 		t.scene.add t.mesh
 
+		t.cube = new THREE.BoxGeometry(1, 1, 1)
+
+		# t.mesh = new (THREE.Mesh)(t.cube, t.material)
+
 		# basicMaterial = new (THREE.MeshBasicMaterial)(color: 0x000000)
-		# basicMesh = new (THREE.Mesh)(t.geometry, basicMaterial)
+		# basicMesh = new (THREE.Mesh)(t.sphere, basicMaterial)
 		# edges = new THREE.EdgesHelper(basicMesh, 0xeebb00)
 		# edges.material.linewidth = 4
 		# t.scene.add edges
@@ -92,52 +98,59 @@ Template.index.onRendered ->
 		t.lat = Math.max(-85, Math.min(85, t.lat))
 		t.phi = THREE.Math.degToRad(90 - t.lat)
 		t.theta = THREE.Math.degToRad(t.lon)
-		# t.camera.target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
-		# t.camera.target.y = 500 * Math.cos(t.phi)
-		# t.camera.target.z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
-		# t.camera.lookAt t.camera.target
+
+		t.mesh.rotateY(t.theta)
+
+		# t.cameras[2].target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
+		# t.cameras[2].target.y = 500 * Math.cos(t.phi)
+		# t.cameras[2].target.z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
+		# t.cameras[2].lookAt t.cameras[2].target
+		# t.cameras[5].target.x = 500 * Math.sin(t.phi) * Math.cos(t.theta)
+		# t.cameras[5].target.y = 500 * Math.cos(t.phi)
+		# t.cameras[5].target.z = 500 * Math.sin(t.phi) * Math.sin(t.theta)
+		# t.cameras[5].lookAt t.cameras[5].target
 
 		###
 		// distortion
 		t.camera.position.copy( t.camera.target ).negate();
 		###
 
-		width = 120
-		height = 120
+		width = window.innerWidth / 2
+		height = window.innerHeight
 
 		# up
-		t.renderer.setViewport 120, 240, width, height
-		t.renderer.setScissor 120, 240, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[0]
+		# t.renderer.setViewport 120, 240, width, height
+		# t.renderer.setScissor 120, 240, width, height
+		# t.renderer.enableScissorTest true
+		# t.renderer.render t.scene, t.cameras[0]
 
 		# down
-		t.renderer.setViewport 120, 0, width, height
-		t.renderer.setScissor 120, 0, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[1]
+		# t.renderer.setViewport 120, 0, width, height
+		# t.renderer.setScissor 120, 0, width, height
+		# t.renderer.enableScissorTest true
+		# t.renderer.render t.scene, t.cameras[1]
 
 		# left
-		t.renderer.setViewport 0, 120, width, height
-		t.renderer.setScissor 0, 120, width, height
+		t.renderer.setViewport 0, 0, width, height
+		t.renderer.setScissor 0, 0, width, height
 		t.renderer.enableScissorTest true
 		t.renderer.render t.scene, t.cameras[2]
 
 		# right
-		t.renderer.setViewport 360, 120, width, height
-		t.renderer.setScissor 360, 120, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[3]
+		# t.renderer.setViewport 360, 120, width, height
+		# t.renderer.setScissor 360, 120, width, height
+		# t.renderer.enableScissorTest true
+		# t.renderer.render t.scene, t.cameras[3]
 
 		# front
-		t.renderer.setViewport 240, 120, width, height
-		t.renderer.setScissor 240, 120, width, height
-		t.renderer.enableScissorTest true
-		t.renderer.render t.scene, t.cameras[4]
+		# t.renderer.setViewport 240, 120, width, height
+		# t.renderer.setScissor 240, 120, width, height
+		# t.renderer.enableScissorTest true
+		# t.renderer.render t.scene, t.cameras[4]
 
 		# back
-		t.renderer.setViewport 120, 120, width, height
-		t.renderer.setScissor 120, 120, width, height
+		t.renderer.setViewport width, 0, width, height
+		t.renderer.setScissor width, 0, width, height
 		t.renderer.enableScissorTest true
 		t.renderer.render t.scene, t.cameras[5]
 
@@ -146,8 +159,10 @@ Template.index.onRendered ->
 
 	$(window).resize ->
 		# t.camera.aspect = window.innerWidth / window.innerHeight
-		for camera in t.cameras
-			camera.updateProjectionMatrix()
+		# for camera in t.cameras
+			# camera.updateProjectionMatrix()
+		t.cameras[2].updateProjectionMatrix()
+		t.cameras[5].updateProjectionMatrix()
 		t.renderer.setSize window.innerWidth, window.innerHeight
 		return
 
